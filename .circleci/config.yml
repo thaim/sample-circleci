@@ -36,9 +36,9 @@ jobs:
     executor:
       name: my-executor
     steps:
+      - checkout
       - attach_workspace:
           at: /home/circleci/project/node_modules
-      - checkout
       - run: yarn test
       - sayhello:
           to: JavaScript
