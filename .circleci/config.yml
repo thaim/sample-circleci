@@ -1,11 +1,16 @@
-version: 2
-jobs:
-  build:
+version: 2.1
+executors:
+  my-executor:
     docker:
       - image: cimg/node:lts
+    environment:
+      TZ: 'Asia/Tokyo'
+
+jobs:
+  build:
+    executor:
+      name: my-executor
     steps:
       - checkout
       - run: yarn install
       - run: yarn test
-    environment:
-      TZ: 'Asia/Tokyo'
