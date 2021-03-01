@@ -1,0 +1,16 @@
+{
+  "name": "sample-circleci",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/thaim/sample-circleci.git"
+  },
+  "author": "thaim24@gmail.com",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "26.1.0"
+  }
+}
