@@ -11,6 +11,16 @@ executors:
     environment:
       BUNDLE_PATH: vendor/bundle
 
+commands:
+  sayhello:
+    description: "Say Hello"
+    parameters:
+      to:
+        type: string
+        default: "World"
+    steps:
+      - run: echo Hello << parameters.to >>
+
 jobs:
   build:
     executor:
@@ -19,6 +29,8 @@ jobs:
       - checkout
       - run: yarn install
       - run: yarn test
+      - sayhello:
+          to: JavaScript
 
   railsapp:
     executor:
@@ -29,6 +41,8 @@ jobs:
       RAILS_ENV: production
     steps:
       - run: echo Hello World
+      - sayhello:
+          to: Everyone
 
 workflows:
   version: 2
