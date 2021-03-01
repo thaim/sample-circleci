@@ -53,6 +53,11 @@ jobs:
       - run: echo Hello World
       - sayhello:
           to: Everyone
+  deploy:
+    executor:
+      name: rails
+    steps:
+      - run: echo Deploy done!
 
 workflows:
   version: 2
@@ -65,3 +70,10 @@ workflows:
       - railsapp:
           requires:
             - test
+      - deploy:
+          requires:
+            - railsapp
+          filters:
+            branches:
+              only:
+                - master
