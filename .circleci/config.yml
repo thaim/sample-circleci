@@ -7,3 +7,5 @@ jobs:
       - checkout
       - run: yarn install
       - run: yarn test
+    environment:
+      TZ: 'Asia/Tokyo'
