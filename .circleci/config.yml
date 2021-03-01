@@ -22,16 +22,26 @@ commands:
       - run: echo Hello << parameters.to >>
 
 jobs:
-  build:
+  install:
     executor:
       name: my-executor
     steps:
       - checkout
       - run: yarn install
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+  test:
+    executor:
+      name: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
       - run: yarn test
       - sayhello:
           to: JavaScript
-
   railsapp:
     executor:
       name: rails
@@ -48,5 +58,10 @@ workflows:
   version: 2
   workflow:
     jobs:
-      - build
-      - railsapp
+      - install
+      - test:
+          requires:
+            - install
+      - railsapp:
+          requires:
+            - test
