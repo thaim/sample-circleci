@@ -5,6 +5,11 @@ executors:
       - image: cimg/node:lts
     environment:
       TZ: 'Asia/Tokyo'
+  rails:
+    docker:
+      - image: cimg/ruby:2.7.1-node
+    environment:
+      BUNDLE_PATH: vendor/bundle
 
 jobs:
   build:
@@ -14,3 +19,20 @@ jobs:
       - checkout
       - run: yarn install
       - run: yarn test
+
+  railsapp:
+    executor:
+      name: rails
+    docker: # overwride executor definitions
+      - image: cimg/ruby:2.7.1
+    environment:
+      RAILS_ENV: production
+    steps:
+      - run: echo Hello World
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build
+      - railsapp
