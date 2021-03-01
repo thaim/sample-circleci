@@ -29,7 +29,7 @@ jobs:
       - checkout
       - run: yarn install
       - persist_to_workspace:
-          root: /home/circleci/project/
+          root: .
           paths:
             - node_modules
   test:
@@ -38,7 +38,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: /home/circleci/project/node_modules
+          at: ~/project
       - run: yarn test
       - sayhello:
           to: JavaScript
