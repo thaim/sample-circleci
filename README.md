@@ -1,4 +1,5 @@
 # sample-circleci
+[![CircleCI](https://circleci.com/gh/thaim/sample-circleci.svg?style=svg)](https://app.circleci.com/pipelines/github/thaim/sample-circleci)
 
 ## 実行
 ### 設定のコンバート
