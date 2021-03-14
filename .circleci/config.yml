@@ -62,6 +62,7 @@ jobs:
       - run: echo Deploy done!
       - slack/notify:
           event: pass
+          template: success_tagged_deploy_1
 
 workflows:
   version: 2
