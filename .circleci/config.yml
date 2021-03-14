@@ -10,6 +10,8 @@ executors:
       - image: cimg/ruby:2.7.1-node
     environment:
       BUNDLE_PATH: vendor/bundle
+orbs:
+  slack: circleci/slack@4.3.1
 
 commands:
   sayhello:
@@ -58,6 +60,8 @@ jobs:
       name: rails
     steps:
       - run: echo Deploy done!
+      - slack/notify:
+          event: pass
 
 workflows:
   version: 2
@@ -77,3 +81,4 @@ workflows:
             branches:
               only:
                 - master
+          context: slack
