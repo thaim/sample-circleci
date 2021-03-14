@@ -62,7 +62,6 @@ jobs:
       - run: echo Deploy done!
       - slack/notify:
           event: pass
-          context: slack
 
 workflows:
   version: 2
@@ -82,3 +81,4 @@ workflows:
             branches:
               only:
                 - master
+          context: slack
