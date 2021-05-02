@@ -3,6 +3,8 @@ executors:
   default: # executorに予約名等はなく、人が判断するためだけのもの
     docker:
       - image: cimg/node:lts
+    environment:
+      TZ: 'Asia/Tokyo'
     working_directory: ~/repo # デフォルト値は ~/project
 
 jobs:
