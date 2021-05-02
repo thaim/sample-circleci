@@ -1,0 +1,85 @@
+version: 2.1
+executors:
+  my-executor:
+    docker:
+      - image: cimg/node:lts
+    environment:
+      TZ: 'Asia/Tokyo'
+  rails:
+    docker:
+      - image: cimg/ruby:2.7.1-node
+    environment:
+      BUNDLE_PATH: vendor/bundle
+orbs:
+  slack: circleci/slack@4.3.1
+
+commands:
+  sayhello:
+    description: "Say Hello"
+    parameters:
+      to:
+        type: string
+        default: "World"
+    steps:
+      - run: echo Hello << parameters.to >>
+
+jobs:
+  install:
+    executor:
+      name: my-executor
+    steps:
+      - checkout
+      - run: yarn install
+      - persist_to_workspace:
+          root: .
+          paths:
+            - node_modules
+  test:
+    executor:
+      name: my-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/project
+      - run: yarn test
+      - sayhello:
+          to: JavaScript
+  railsapp:
+    executor:
+      name: rails
+    docker: # overwride executor definitions
+      - image: cimg/ruby:2.7.1
+    environment:
+      RAILS_ENV: production
+    steps:
+      - run: echo Hello World
+      - sayhello:
+          to: Everyone
+  deploy:
+    executor:
+      name: rails
+    steps:
+      - run: echo Deploy done!
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - install
+      - test:
+          requires:
+            - install
+      - railsapp:
+          requires:
+            - test
+      - deploy:
+          requires:
+            - railsapp
+          filters:
+            branches:
+              only:
+                - master
+          context: slack

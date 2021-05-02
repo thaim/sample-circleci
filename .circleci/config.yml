@@ -1,85 +1,39 @@
 version: 2.1
 executors:
-  my-executor:
+  default: # executorに予約名等はなく、人が判断するためだけのもの
     docker:
       - image: cimg/node:lts
     environment:
       TZ: 'Asia/Tokyo'
-  rails:
-    docker:
-      - image: cimg/ruby:2.7.1-node
-    environment:
-      BUNDLE_PATH: vendor/bundle
-orbs:
-  slack: circleci/slack@4.3.1
-
-commands:
-  sayhello:
-    description: "Say Hello"
-    parameters:
-      to:
-        type: string
-        default: "World"
-    steps:
-      - run: echo Hello << parameters.to >>
+    working_directory: ~/repo # デフォルト値は ~/project
 
 jobs:
-  install:
-    executor:
-      name: my-executor
+  setup:
+    executor: default
     steps:
       - checkout
-      - run: yarn install
+      - run:
+          name: Nodeモジュールのインストール
+          command: yarn install
       - persist_to_workspace:
-          root: .
+          root: ~/repo
           paths:
             - node_modules
-  test:
-    executor:
-      name: my-executor
+  test_jest:
+    executor: default
     steps:
       - checkout
       - attach_workspace:
-          at: ~/project
-      - run: yarn test
-      - sayhello:
-          to: JavaScript
-  railsapp:
-    executor:
-      name: rails
-    docker: # overwride executor definitions
-      - image: cimg/ruby:2.7.1
-    environment:
-      RAILS_ENV: production
-    steps:
-      - run: echo Hello World
-      - sayhello:
-          to: Everyone
-  deploy:
-    executor:
-      name: rails
-    steps:
-      - run: echo Deploy done!
-      - slack/notify:
-          event: pass
-          template: success_tagged_deploy_1
+          at: .
+      - run:
+          name: Jestを実行
+          command: npx jest --ci --maxWorkers=2
 
 workflows:
   version: 2
-  workflow:
-    jobs:
-      - install
-      - test:
-          requires:
-            - install
-      - railsapp:
-          requires:
-            - test
-      - deploy:
-          requires:
-            - railsapp
-          filters:
-            branches:
-              only:
-                - master
-          context: slack
+  build_test:
+    jobs: # 各jobを並列実行
+      - setup
+      - test_jest:
+          requires: # jobの実行順序を制御し setup のあとに実行
+            - setup
