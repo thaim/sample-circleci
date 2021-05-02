@@ -66,5 +66,5 @@ workflows:
       - setup_node
       - test_jest:
           requires: # jobの実行順序を制御し setup のあとに実行
-            - setup
+            - setup_node
       - test_rspec
