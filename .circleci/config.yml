@@ -8,7 +8,7 @@ executors:
     working_directory: ~/repo # デフォルト値は ~/project
   with_db:
     docker:
-      - image: cimg/ruby:2.7.1
+      - image: cimg/ruby:2.7.1-node
         environment:
           DB_HOST: 127.0.0.1
           RAILS_ENV: test
